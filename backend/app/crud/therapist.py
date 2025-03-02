@@ -1,5 +1,6 @@
 from typing import List, Optional
 from sqlalchemy.orm import Session, joinedload
+from sqlalchemy import func
 from app.models.therapist import Therapist, Specialization
 from app.schemas.therapist import TherapistCreate, TherapistUpdate
 
@@ -10,47 +11,49 @@ def get_therapists(
     db: Session,
     skip: int = 0,
     limit: int = 10,
-    search: Optional[str] = None,
-    category: Optional[str] = None,
-    min_rating: Optional[float] = None
-) -> List[Therapist]:
+    search: str | None = None,
+    category: str | None = None,
+    min_rating: float | None = None,
+) -> list[Therapist]:
     query = db.query(Therapist).options(joinedload(Therapist.specializations))
-    
+
     if search:
-        query = query.filter(
+        query = query.join(Therapist.specializations).filter(
             Therapist.name.ilike(f"%{search}%") | 
-            Therapist.description.ilike(f"%{search}%")
-        )
-    
+            Therapist.description.ilike(f"%{search}%") |
+            Specialization.name.ilike(f"%{search}%")
+        ).distinct()  # Add distinct to avoid duplicates due to join
+
     if category:
         query = query.filter(Therapist.category == category)
-    
+
     if min_rating is not None:
         query = query.filter(Therapist.rating >= min_rating)
-    
+
     return query.offset(skip).limit(limit).all()
 
 def get_total_therapists(
     db: Session,
-    search: Optional[str] = None,
-    category: Optional[str] = None,
-    min_rating: Optional[float] = None
+    search: str | None = None,
+    category: str | None = None,
+    min_rating: float | None = None,
 ) -> int:
-    query = db.query(Therapist)
-    
+    query = db.query(func.count(Therapist.id.distinct()))  # Use distinct count
+
     if search:
-        query = query.filter(
+        query = query.join(Therapist.specializations).filter(
             Therapist.name.ilike(f"%{search}%") | 
-            Therapist.description.ilike(f"%{search}%")
+            Therapist.description.ilike(f"%{search}%") |
+            Specialization.name.ilike(f"%{search}%")
         )
-    
+
     if category:
         query = query.filter(Therapist.category == category)
-    
+
     if min_rating is not None:
         query = query.filter(Therapist.rating >= min_rating)
-    
-    return query.count()
+
+    return query.scalar()
 
 def get_categories(db: Session) -> List[str]:
     return [category[0] for category in db.query(Therapist.category).distinct().all()]
