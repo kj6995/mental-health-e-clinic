@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { Star, Search, Filter } from 'lucide-react';
 import { getTherapists, getCategories, type TherapistResponse } from '@/lib/api';
+import Link from 'next/link';
 
 export function TherapistsList() {
   const [therapists, setTherapists] = useState<TherapistResponse | null>(null);
@@ -339,6 +340,26 @@ function TherapistCard({ therapist }: { therapist: Therapist }) {
                   </Badge>
                 ))}
               </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3 mt-6 pt-4 border-t">
+              <Button 
+                variant="default" 
+                className="flex-1"
+                asChild
+              >
+                <Link href={`/therapists/${therapist.id}`}>
+                  Profile
+                </Link>
+              </Button>
+              <Button 
+                variant="outline" 
+                className="flex-1"
+                onClick={() => {}}
+              >
+                Connect
+              </Button>
             </div>
           </CardContent>
         </div>
