@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.crud import therapist as therapist_crud
 from app.schemas.therapist import Therapist, TherapistCreate, TherapistUpdate, TherapistPagination
 from app.api.deps import get_db
+import math
 
 router = APIRouter()
 
@@ -32,6 +33,9 @@ def get_therapists(
         min_rating=min_rating
     )
 
+    # Calculate total pages
+    total_pages = math.ceil(total / per_page)
+
     # Convert therapists to list of dictionaries with specialization names
     therapist_list = []
     for t in therapists:
@@ -49,6 +53,7 @@ def get_therapists(
 
     return {
         "total": total,
+        "total_pages": total_pages,
         "page": page,
         "per_page": per_page,
         "items": therapist_list

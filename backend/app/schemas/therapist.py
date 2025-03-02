@@ -45,6 +45,7 @@ class Therapist(TherapistBase):
 
 class TherapistPagination(BaseModel):
     total: int
+    total_pages: int
     page: int
     per_page: int
     items: List[Therapist]
