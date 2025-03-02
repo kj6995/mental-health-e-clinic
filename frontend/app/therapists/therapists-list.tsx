@@ -274,38 +274,75 @@ export function TherapistsList() {
 
 function TherapistCard({ therapist }: { therapist: Therapist }) {
   return (
-    <Card className="overflow-hidden transition-all hover:shadow-md">
-      <CardHeader className="bg-muted/30 pb-2">
-        <div className="flex justify-between items-start">
-          <div>
-            <h3 className="text-lg font-semibold">{therapist.name}</h3>
-            <p className="text-sm text-muted-foreground">{therapist.category}</p>
-          </div>
-          <div className="text-right">
-            <div className="mb-1">{renderRating(therapist.rating)}</div>
-            <p className="text-sm text-muted-foreground">{therapist.experience}</p>
+    <Card className="overflow-hidden transition-all hover:shadow-md rounded-xl">
+      <div className="flex flex-col md:flex-row">
+        {/* Therapist Image */}
+        <div className="md:w-1/3 relative">
+          <img
+            src="https://plus.unsplash.com/premium_photo-1661551577028-80cfb8e4d236?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            alt={therapist.name}
+            className="w-full h-48 md:h-full object-cover"
+          />
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 md:hidden">
+            <h3 className="text-lg font-semibold text-white">{therapist.name}</h3>
+            <p className="text-sm text-white/80">{therapist.category}</p>
           </div>
         </div>
-      </CardHeader>
-      <CardContent className="pt-4">
-        <p className="mb-4">{therapist.description}</p>
-        <div className="flex flex-col gap-2">
-          <div>
-            <span className="text-sm font-medium">Qualification:</span>
-            <span className="text-sm ml-2">{therapist.qualification}</span>
-          </div>
-          <div>
-            <span className="text-sm font-medium">Specialization:</span>
-            <div className="flex flex-wrap gap-1 mt-1">
-              {therapist.specialization.map((spec) => (
-                <Badge key={spec} variant="secondary" className="text-xs">
-                  {spec}
-                </Badge>
-              ))}
+
+        {/* Content */}
+        <div className="md:w-2/3 flex flex-col">
+          {/* Header */}
+          <CardHeader className="bg-muted/10 pb-2">
+            <div className="hidden md:flex justify-between items-start">
+              <div>
+                <h3 className="text-xl font-semibold tracking-tight">{therapist.name}</h3>
+                <p className="text-sm text-muted-foreground">{therapist.category}</p>
+              </div>
+              <div className="text-right">
+                <div className="mb-1">{renderRating(therapist.rating)}</div>
+                <p className="text-sm text-muted-foreground">{therapist.experience}</p>
+              </div>
             </div>
-          </div>
+            {/* Show rating on mobile */}
+            <div className="md:hidden flex justify-end mt-2">
+              <div>{renderRating(therapist.rating)}</div>
+            </div>
+          </CardHeader>
+
+          {/* Content */}
+          <CardContent className="flex-grow pt-4">
+            <p className="text-sm text-muted-foreground mb-4 line-clamp-2 md:line-clamp-3">
+              {therapist.description}
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="text-sm font-medium mb-1">Qualification</h4>
+                <p className="text-sm">{therapist.qualification}</p>
+              </div>
+              <div>
+                <h4 className="text-sm font-medium mb-1">Experience</h4>
+                <p className="text-sm">{therapist.experience}</p>
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <h4 className="text-sm font-medium mb-2">Specializations</h4>
+              <div className="flex flex-wrap gap-1.5">
+                {therapist.specialization.map((spec) => (
+                  <Badge 
+                    key={spec} 
+                    variant="secondary" 
+                    className="text-xs px-2 py-0.5 bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                  >
+                    {spec}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </CardContent>
         </div>
-      </CardContent>
+      </div>
     </Card>
   );
 }
