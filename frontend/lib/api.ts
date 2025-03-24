@@ -19,6 +19,23 @@ export interface TherapistResponse {
   items: Therapist[];
 }
 
+export interface Journal {
+  id: string;
+  title: string;
+  content: string;
+  tags: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface JournalResponse {
+  page: number;
+  per_page: number;
+  total_pages: number;
+  total_records: number;
+  data: Journal[];
+}
+
 export async function getTherapists(
   page: number = 1,
   per_page: number = 10,
@@ -55,4 +72,67 @@ export async function getTherapist(id: number): Promise<Therapist> {
     throw new Error('Failed to fetch therapist');
   }
   return response.json();
+}
+
+export async function getJournals(
+  page: number = 1,
+  search: string = ''
+): Promise<JournalResponse> {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    ...(search && { search })
+  });
+
+  const response = await fetch(`${API_BASE_URL}/journals?${params}`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch journals');
+  }
+  return response.json();
+}
+
+export async function createJournal(journalData: {
+  title: string;
+  content: string;
+  tags: string[];
+}): Promise<Journal> {
+  const response = await fetch(`${API_BASE_URL}/journals`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(journalData),
+  });
+  
+  if (!response.ok) {
+    throw new Error('Failed to create journal');
+  }
+  return response.json();
+}
+
+export async function updateJournal(
+  id: string,
+  journalData: {
+    title: string;
+    content: string;
+    tags: string[];
+  }
+): Promise<Journal> {
+  const response = await fetch(`${API_BASE_URL}/journals/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(journalData),
+  });
+  
+  if (!response.ok) {
+    throw new Error('Failed to update journal');
+  }
+  return response.json();
+}
+
+export async function deleteJournal(id: string): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/journals/${id}`, {
+    method: 'DELETE',
+  });
+  
+  if (!response.ok) {
+    throw new Error('Failed to delete journal');
+  }
 }

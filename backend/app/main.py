@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.endpoints import therapists
+from app.api.endpoints import therapists, journals
 from app.core.config import settings
 from app.db.session import engine
 from app.models.therapist import Base
@@ -28,4 +28,10 @@ app.include_router(
     therapists.router,
     prefix=f"{settings.API_V1_STR}/therapists",
     tags=["therapists"]
+)
+
+app.include_router(
+    journals.router,
+    prefix=f"{settings.API_V1_STR}/journals",
+    tags=["journals"]
 )

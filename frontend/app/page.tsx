@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { HeartPulse } from 'lucide-react';
+import { HeartPulse, Book } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -12,12 +12,20 @@ export default function Home() {
         <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mb-10">
           Connect with qualified mental health professionals who can help you on your journey to wellness.
         </p>
-        <Link href="/therapists">
-          <Button size="lg" className="gap-2">
-            <HeartPulse className="h-5 w-5" />
-            Find Therapists
-          </Button>
-        </Link>
+        <div className="flex gap-4">
+          <Link href="/therapists">
+            <Button size="lg" className="gap-2">
+              <HeartPulse className="h-5 w-5" />
+              Find Therapists
+            </Button>
+          </Link>
+          <Link href="/journals">
+            <Button size="lg" variant="outline" className="gap-2">
+              <Book className="h-5 w-5" />
+              My Journal
+            </Button>
+          </Link>
+        </div>
       </div>
     </div>
   );
